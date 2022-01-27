@@ -1,20 +1,20 @@
 package me.dion.teamsspammer.bot;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-public class Bot {
-    private final WebDriver driver;
-    private final String website;
-    private final String name;
+import java.util.List;
 
-    public Bot(WebDriver driver, String website, String name) {
-        this.driver = driver;
-        this.website = website;
-        this.name = name;
-    }
+public record Bot(WebDriver driver, String website, String name) {
 
-    public boolean connect() {
-        return false;
+    public void connect() {
+        driver.get(website);
+
+        List<WebElement> buttons = driver.findElements(new By.ByTagName("button"));
+        buttons.get(1).click();
+
+
     }
 
     public boolean disconnect() {
