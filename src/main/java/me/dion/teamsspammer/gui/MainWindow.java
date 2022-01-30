@@ -88,7 +88,7 @@ public class MainWindow extends JFrame {
 
             WebDriver driver = new ChromeDriver(options);
 
-            manager = new BotManager(driver, linkArea.getText());
+            manager = new BotManager(driver, linkArea.getText(), driverFile.getAbsolutePath());
             manager.createBots(Short.parseShort(botAmount.getText()));
             manager.connect();
         });

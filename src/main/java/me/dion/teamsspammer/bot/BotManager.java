@@ -7,16 +7,17 @@ import java.util.ArrayList;
 public class BotManager {
     private final ArrayList<Bot> bots = new ArrayList<>();
     private final WebDriver driver;
-    private final String url;
+    private final String url, d;
 
-    public BotManager(WebDriver driver, String url) {
+    public BotManager(WebDriver driver, String url, String d) {
         this.driver = driver;
         this.url = url;
+        this.d = d;
     }
 
     public void createBots(short count) {
         for (short i = 0; i < count; i++) {
-            bots.add(new Bot(driver, url, "BOT " + i));
+            bots.add(new Bot(driver, url, "BOT " + i, d));
         }
     }
 

@@ -1,21 +1,42 @@
 package me.dion.teamsspammer.bot;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-public record Bot(WebDriver driver, String website, String name) {
+public record Bot(WebDriver driver_, String website, String name, String d) {
 
     public void connect() {
+        System.setProperty("webdriver.chrome.driver", d);
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("use-fake-ui-for-media-stream");
+        options.addArguments("--headless");
+
+        WebDriver driver = new ChromeDriver(options);
+
         driver.get(website);
         List<WebElement> buttons = driver.findElements(new By.ByTagName("button"));
         buttons.get(1).sendKeys("webdriver" + Keys.ENTER);
-        buttons.get(1).click();
+        try {
+            buttons.get(1).click();
+        } catch (Exception ignored) {
+        }
+
+        WebDriverWait wait = new WebDriverWait(driver, 20);
+        By addItem = new By.ByName("username");
+
+// get the "Add Item" element
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(addItem));
+        element.sendKeys(name);
 
 
+        List<WebElement> button = driver.findElements(new By.ByTagName("button"));
+        button.get(0).click();
     }
 
     public boolean disconnect() {
