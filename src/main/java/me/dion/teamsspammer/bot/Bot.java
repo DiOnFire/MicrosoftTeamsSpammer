@@ -1,6 +1,7 @@
 package me.dion.teamsspammer.bot;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -10,8 +11,8 @@ public record Bot(WebDriver driver, String website, String name) {
 
     public void connect() {
         driver.get(website);
-
         List<WebElement> buttons = driver.findElements(new By.ByTagName("button"));
+        buttons.get(1).sendKeys("webdriver" + Keys.ENTER);
         buttons.get(1).click();
 
 

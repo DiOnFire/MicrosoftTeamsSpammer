@@ -1,25 +1,26 @@
 package me.dion.teamsspammer.gui;
 
-import me.dion.teamsspammer.bot.Bot;
+import me.dion.teamsspammer.bot.BotManager;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 // I'm too lazy to write this using JavaFX :/
 
 public class MainWindow extends JFrame {
-    private JButton selectDriverButton, startButton, stopButton;
     private JFileChooser chooser;
-    private JLabel selectedDriverLabel, enterLinkLabel;
+    private JLabel selectedDriverLabel;
     private JTextArea linkArea;
-    private final ArrayList<Bot> bots = new ArrayList<>();
-    private JTextField botAmount, delay;
+    private BotManager manager;
+    private JTextField botAmount;
     private File driverFile;
     private final Container container = new Container();
 
@@ -38,7 +39,7 @@ public class MainWindow extends JFrame {
         chooser = new JFileChooser();
         linkArea = new JTextArea();
         botAmount = new JTextField();
-        delay = new JTextField();
+        JTextField delay = new JTextField();
 
         JLabel count = new JLabel("Bot count");
         count.setBounds(10, 460, 200, 10);
@@ -57,7 +58,7 @@ public class MainWindow extends JFrame {
         linkArea.setBounds(10, 300, 1245, 150);
         container.add(linkArea);
 
-        enterLinkLabel = new JLabel("Enter conference link...");
+        JLabel enterLinkLabel = new JLabel("Enter conference link...");
         enterLinkLabel.setBounds(10, 285, 200, 10);
         container.add(enterLinkLabel);
 
@@ -65,46 +66,37 @@ public class MainWindow extends JFrame {
         selectedDriverLabel.setBounds(250, 30, 1000, 10);
         container.add(selectedDriverLabel);
 
-        selectDriverButton = new JButton("Select driver...");
+        JButton selectDriverButton = new JButton("Select driver...");
         selectDriverButton.setBounds(10, 10, 200, 50);
-        selectDriverButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                int result = chooser.showOpenDialog(MainWindow.this);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    driverFile = chooser.getSelectedFile();
-                    selectedDriverLabel.setText(driverFile.getAbsolutePath());
-                }
+        selectDriverButton.addActionListener(e -> {
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int result = chooser.showOpenDialog(MainWindow.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                driverFile = chooser.getSelectedFile();
+                selectedDriverLabel.setText(driverFile.getAbsolutePath());
             }
         });
         container.add(selectDriverButton);
 
-        startButton = new JButton("Start");
+        JButton startButton = new JButton("Start");
         startButton.setBounds(10, 620, 620, 50);
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startBotting();
-            }
+        startButton.addActionListener(e -> {
+            System.setProperty("webdriver.chrome.driver", driverFile.getAbsolutePath());
+
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("use-fake-ui-for-media-stream");
+
+            WebDriver driver = new ChromeDriver(options);
+
+            manager = new BotManager(driver, linkArea.getText());
+            manager.createBots(Short.parseShort(botAmount.getText()));
+            manager.connect();
         });
         container.add(startButton);
 
-        stopButton = new JButton("Stop");
+        JButton stopButton = new JButton("Stop");
         stopButton.setBounds(630, 620, 620, 50);
+        stopButton.addActionListener(e -> manager.disconnect());
         container.add(stopButton);
-    }
-
-    public void startBotting() {
-        bots.clear();
-        System.setProperty("webdriver.edge.driver", driverFile.getAbsolutePath());
-        WebDriver driver = new EdgeDriver();
-        for (int i = 0; i < Integer.parseInt(botAmount.getText()); i++) {
-            bots.add(new Bot(driver, linkArea.getText(), "Bot" + i));
-        }
-        bots.forEach(bot -> {
-            bot.connect();
-            System.out.println("Bot connected!");
-        });
     }
 }
