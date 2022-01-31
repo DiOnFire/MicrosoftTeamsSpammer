@@ -3,6 +3,6 @@ A small program that allows you to have fun in boring Microsoft Teams conferenс
 
 # How to use
 1) Download latest jar-file from the releases.
-2) Download Edge browser driver from Microsoft website.
+2) Download Chrome browser driver.
 3) (if you don't have) Install Java 17.
 4) Have fun :)
