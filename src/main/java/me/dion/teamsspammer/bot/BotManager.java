@@ -4,16 +4,18 @@ import java.util.ArrayList;
 
 public class BotManager {
     private final ArrayList<Bot> bots = new ArrayList<>();
-    private final String url, d;
+    private final String url, d, audio, video;
 
-    public BotManager(String url, String d) {
+    public BotManager(String url, String d, String audio, String video) {
         this.url = url;
         this.d = d;
+        this.audio = audio;
+        this.video = video;
     }
 
     public void createBots(short count) {
         for (short i = 0; i < count; i++) {
-            bots.add(new Bot(url, "BOT " + i, d, ""));
+            bots.add(new Bot(url, "BOT " + i, d, video, audio));
         }
     }
 
@@ -26,7 +28,7 @@ public class BotManager {
     }
 
     public void toggleMicro() {
-        bots.forEach(Bot::enableMicrophone);
+        bots.forEach(Bot::toggleMicrophone);
     }
 
     public void toggleCam() {

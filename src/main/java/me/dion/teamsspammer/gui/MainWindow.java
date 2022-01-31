@@ -14,7 +14,7 @@ public class MainWindow extends JFrame {
     private JTextArea linkArea;
     private BotManager manager;
     private JTextField botAmount;
-    private File driverFile;
+    private File driverFile, audioFile, videoFile;
     private final Container container = new Container();
 
     public MainWindow() {
@@ -59,6 +59,14 @@ public class MainWindow extends JFrame {
         selectedDriverLabel.setBounds(250, 30, 1000, 10);
         container.add(selectedDriverLabel);
 
+        JLabel selectedAudio = new JLabel("NONE");
+        selectedAudio.setBounds(250, 90, 1000, 10);
+        container.add(selectedAudio);
+
+        JLabel selectedVideo = new JLabel("NONE");
+        selectedVideo.setBounds(250, 150, 1000, 10);
+        container.add(selectedVideo);
+
         JButton selectDriverButton = new JButton("Select driver...");
         selectDriverButton.setBounds(10, 10, 200, 50);
         selectDriverButton.addActionListener(e -> {
@@ -71,12 +79,34 @@ public class MainWindow extends JFrame {
         });
         container.add(selectDriverButton);
 
-        JButton startButton = new JButton("Start");
+        JButton selectAudioButton = new JButton("Select audio file (WAV)");
+        selectAudioButton.setBounds(10, 70, 200, 50);
+        selectAudioButton.addActionListener(e -> {
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int result = chooser.showOpenDialog(MainWindow.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                audioFile = chooser.getSelectedFile();
+                selectedAudio.setText(audioFile.getAbsolutePath());
+            }
+        });
+        container.add(selectAudioButton);
+
+        JButton selectVideoButton = new JButton("Select video file (Y4M)");
+        selectVideoButton.setBounds(10, 130, 200, 50);
+        selectVideoButton.addActionListener(e -> {
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int result = chooser.showOpenDialog(MainWindow.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                videoFile = chooser.getSelectedFile();
+                selectedVideo.setText(videoFile.getAbsolutePath());
+            }
+        });
+        container.add(selectVideoButton);
+
+        JButton startButton = new JButton("Connect!");
         startButton.setBounds(10, 620, 620, 50);
         startButton.addActionListener(e -> {
-            System.setProperty("webdriver.chrome.driver", driverFile.getAbsolutePath());
-
-            manager = new BotManager(linkArea.getText(), driverFile.getAbsolutePath());
+            manager = new BotManager(linkArea.getText(), driverFile.getAbsolutePath(), audioFile.getAbsolutePath(), videoFile.getAbsolutePath());
             manager.createBots(Short.parseShort(botAmount.getText()));
             manager.connect();
         });
@@ -92,7 +122,7 @@ public class MainWindow extends JFrame {
         toggleCam.addActionListener(e -> manager.toggleCam());
         container.add(toggleCam);
 
-        JButton stopButton = new JButton("Stop");
+        JButton stopButton = new JButton("Disconnect");
         stopButton.setBounds(630, 620, 620, 50);
         stopButton.addActionListener(e -> manager.disconnect());
         container.add(stopButton);
