@@ -8,39 +8,25 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-public record Bot(WebDriver driver_, String website, String name, String d) {
-
+public record Bot(String website, String name, String d) {
     public void connect() {
         System.setProperty("webdriver.chrome.driver", d);
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("use-fake-ui-for-media-stream");
         options.addArguments("--headless");
-
         WebDriver driver = new ChromeDriver(options);
-
         driver.get(website);
         List<WebElement> buttons = driver.findElements(new By.ByTagName("button"));
-        buttons.get(1).sendKeys("webdriver" + Keys.ENTER);
         try {
             buttons.get(1).click();
-        } catch (Exception ignored) {
-        }
-
+        } catch (Exception ignored) {}
         WebDriverWait wait = new WebDriverWait(driver, 20);
-        By addItem = new By.ByName("username");
-
-// get the "Add Item" element
-        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(addItem));
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(new By.ByName("username")));
         element.sendKeys(name);
-
-
-        List<WebElement> button = driver.findElements(new By.ByTagName("button"));
-        button.get(0).click();
+        driver.findElements(new By.ByTagName("button")).get(0).click();
     }
 
-    public boolean disconnect() {
-        return false;
+    public void disconnect() {
     }
 
     public boolean enableCamera() {
