@@ -1,6 +1,9 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
 group 'me.dion.teamsspammer'
 version '1.0'
@@ -9,10 +12,38 @@ repositories {
     mavenCentral()
 }
 
+//create a single Jar with all dependencies
+
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation 'org.seleniumhq.selenium:selenium-java:4.1.1'
+
+    shadow 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    shadow 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    shadow 'org.seleniumhq.selenium:selenium-java:4.1.1'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(17)
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    archiveClassifier.set("shadow")
+    manifest {
+        attributes(
+                'Main-Class': 'me.dion.teamsspammer.Main'
+        )
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
 }
 
 test {
