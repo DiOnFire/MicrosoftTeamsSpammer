@@ -82,6 +82,16 @@ public class MainWindow extends JFrame {
         });
         container.add(startButton);
 
+        JButton toggleMicro = new JButton("Toggle microphones");
+        toggleMicro.setBounds(630, 560, 620, 50);
+        toggleMicro.addActionListener(e -> manager.toggleMicro());
+        container.add(toggleMicro);
+
+        JButton toggleCam = new JButton("Toggle cameras");
+        toggleCam.setBounds(630, 500, 620, 50);
+        toggleCam.addActionListener(e -> manager.toggleCam());
+        container.add(toggleCam);
+
         JButton stopButton = new JButton("Stop");
         stopButton.setBounds(630, 620, 620, 50);
         stopButton.addActionListener(e -> manager.disconnect());

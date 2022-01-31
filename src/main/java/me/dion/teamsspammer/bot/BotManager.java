@@ -13,7 +13,7 @@ public class BotManager {
 
     public void createBots(short count) {
         for (short i = 0; i < count; i++) {
-            bots.add(new Bot(url, "BOT " + i, d));
+            bots.add(new Bot(url, "BOT " + i, d, ""));
         }
     }
 
@@ -23,5 +23,13 @@ public class BotManager {
 
     public void disconnect() {
         bots.forEach(Bot::disconnect);
+    }
+
+    public void toggleMicro() {
+        bots.forEach(Bot::enableMicrophone);
+    }
+
+    public void toggleCam() {
+        bots.forEach(Bot::toggleCamera);
     }
 }
